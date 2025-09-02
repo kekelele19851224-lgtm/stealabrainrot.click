@@ -1,8 +1,8 @@
 User-agent: *
 Allow: /
 
-# Sitemap location
-Sitemap: https://stealabrainrot.click/sitemap.xml
-
 # Disallow test files
 Disallow: /test-*.html
+
+# Sitemap location
+Sitemap: https://stealabrainrot.click/sitemap.xml
