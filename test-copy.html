@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Copy Function Test</title>
+    <style>
+        .copy-btn {
+            background: #007aff;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        .copy-btn:hover {
+            background: #0056cc;
+        }
+    </style>
+</head>
+<body>
+    <h1>Copy Function Test</h1>
+    <p>Test the copy functionality:</p>
+    <button class="copy-btn" data-code="Glorbo">Copy Glorbo</button>
+    <button class="copy-btn" data-code="Summer2025">Copy Summer2025</button>
+    
+    <script>
+        // Enhanced clipboard functionality
+        async function copyToClipboard(text) {
+            try {
+                if (navigator.clipboard && window.isSecureContext) {
+                    await navigator.clipboard.writeText(text);
+                    return true;
+                } else {
+                    // Fallback for older browsers or non-HTTPS
+                    return fallbackCopyTextToClipboard(text);
+                }
+            } catch (err) {
+                console.error('Failed to copy: ', err);
+                return fallbackCopyTextToClipboard(text);
+            }
+        }
+
+        function fallbackCopyTextToClipboard(text) {
+            const textArea = document.createElement("textarea");
+            textArea.value = text;
+            textArea.style.position = "fixed";
+            textArea.style.left = "-999999px";
+            textArea.style.top = "-999999px";
+            document.body.appendChild(textArea);
+            textArea.focus();
+            textArea.select();
+            
+            let successful = false;
+            try {
+                successful = document.execCommand('copy');
+            } catch (err) {
+                console.error('Fallback: Oops, unable to copy', err);
+            }
+            
+            document.body.removeChild(textArea);
+            return successful;
+        }
+
+        // Button animation for successful copy
+        function animateButtonSuccess(button) {
+            const originalText = button.textContent;
+            const originalBg = button.style.background;
+            
+            button.textContent = 'Copied!';
+            button.style.background = '#30d158';
+            button.style.transform = 'scale(0.95)';
+            
+            setTimeout(() => {
+                button.style.transform = 'scale(1)';
+            }, 100);
+            
+            setTimeout(() => {
+                button.textContent = originalText;
+                button.style.background = originalBg;
+            }, 2000);
+        }
+
+        // Initialize copy functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const copyButtons = document.querySelectorAll('.copy-btn');
+            
+            copyButtons.forEach(button => {
+                button.addEventListener('click', async (e) => {
+                    e.preventDefault();
+                    
+                    const code = button.getAttribute('data-code');
+                    console.log('Attempting to copy:', code);
+                    
+                    const success = await copyToClipboard(code);
+                    
+                    if (success) {
+                        console.log('Copy successful!');
+                        // Visual feedback
+                        animateButtonSuccess(button);
+                        
+                        // Simple alert for testing
+                        alert(`Code "${code}" copied to clipboard!`);
+                    } else {
+                        console.log('Copy failed!');
+                        alert('Failed to copy code. Please try selecting and copying manually.');
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
